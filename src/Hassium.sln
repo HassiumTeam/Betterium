@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hassium", "Hassium\Hassium.csproj", "{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Betterium", "Hassium\Betterium.csproj", "{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +13,5 @@ Global
 		{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Hassium\Hassium.csproj
 	EndGlobalSection
 EndGlobal
