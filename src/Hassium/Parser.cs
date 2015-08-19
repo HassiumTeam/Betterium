@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace Hassium
 {
@@ -10,9 +7,6 @@ namespace Hassium
 	{
 		int pos;
 		List<Token> tokens;
-
-		public Parser () {
-		}
 
 		#region IFeedable implementation
 
@@ -149,10 +143,9 @@ namespace Hassium
 		}
 
 		AstNode ParseFunctionCall (AstNode left) {
-			if (Accept (TokenType.OpeningParen))
-				return ParseFunctionCall (new NodeFuncCall (left, ParseArgList ()));
-			else
-				return left;
+			return Accept (TokenType.OpeningParen)
+				? ParseFunctionCall (new NodeFuncCall (left, ParseArgList ()))
+				: left;
 		}
 
 		AstNode ParseArgList () {
