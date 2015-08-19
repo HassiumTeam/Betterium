@@ -75,6 +75,9 @@ namespace Betterium
 			Console.Write ("\n");
 			Interpreter
 				.GrabNew ()
+				.Verbose (Verbosity.Debug, Options.w_debug)
+				.Verbose (Verbosity.Warn, Options.w_warn)
+				.Verbose (Verbosity.Error, Options.w_error)
 				.Feed (codebase)
 				.Import (Options.lib.Split (','))
 				.Run ();

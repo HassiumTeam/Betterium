@@ -10,6 +10,9 @@ namespace Betterium
 		AstNode Codebase;
 		List<Variable> Variables;
 		List<Function> Functions;
+		bool Debug;
+		bool Warn;
+		bool Error;
 
 		public Interpreter () {
 			Variables = new List<Variable> ();
@@ -27,6 +30,21 @@ namespace Betterium
 
 		public void Run () {
 			InterpretNode (Codebase);
+		}
+
+		public Interpreter Verbose (Verbosity verb, bool value) {
+			switch (verb) {
+			case Verbosity.Debug:
+				Debug = value;
+				break;
+			case Verbosity.Warn:
+				Warn = value;
+				break;
+			case Verbosity.Error:
+				Error = value;
+				break;
+			}
+			return this;
 		}
 
 		object InterpretNode (AstNode node) {
@@ -59,6 +77,14 @@ namespace Betterium
 				fxargs.ForEach (n => args.Add (InterpretNode (n)));
 				TryCall (target.Value, args.ToArray ());
 				break;
+			case NodeType.Identifier:
+				var ident = node as NodeIdent;
+				if (ident == null)
+					throw new Exception ("*** Expected identifier.");
+				var first = Variables.FirstOrDefault (v => v.Name == ident.Value);
+				if (first != default (Variable))
+					return first.Value;
+				throw new Exception ("*** Variable not found.");
 			}
 			return null;
 		}
@@ -77,31 +103,45 @@ namespace Betterium
 		}
 
 		object InterpretOperationBin (NodeBinOp node) {
-			var op1 = InterpretNode (node.Left) as decimal?;
-			var op2 = InterpretNode (node.Right) as decimal?;
 			switch (node.Type) {
 			case BinOp.Addition:
+				var op1 = InterpretNode (node.Left) as decimal?;
+				var op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 + (decimal)op2;
 			case BinOp.Subtraction:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 - (decimal)op2;
 			case BinOp.Division:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 / (decimal)op2;
 			case BinOp.Multiplication:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 * (decimal)op2;
 			case BinOp.Equals:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 == (decimal)op2;
 			case BinOp.NotEquals:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 != (decimal)op2;
 			case BinOp.GreaterThan:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 > (decimal)op2;
 			case BinOp.LessThan:
+				op1 = InterpretNode (node.Left) as decimal?;
+				op2 = InterpretNode (node.Right) as decimal?;
 				ThrowNullDecimal (op1, op2);
 				return (decimal)op1 < (decimal)op2;
 			case BinOp.Assignment:
@@ -109,8 +149,8 @@ namespace Betterium
 				if (left == null)
 					throw new Exception ("*** Expected identifier.");
 				var right = InterpretNode (node.Right);
-				var first = Variables.FirstOrDefault (v => v.Name == left.Value);
-				if (first != null)
+				var first = Variables.FirstOrDefault (v => v.Name.ToLowerInvariant () == left.Value.ToLowerInvariant ());
+				if (first != default (Variable))
 					Variables.Remove (first);
 				Variables.Add (new Variable (left.Value, right));
 				return right;
@@ -154,8 +194,22 @@ namespace Betterium
 			//for (var i = 0; i < args.Length; i++)
 			//	Console.WriteLine (":: :: [{0}] {1}", i, args [i]);
 			Functions.ForEach (fx => {
-				if (fx.Name == func.ToString ())
-					fx.Invoke (args);
+				try {
+					if (fx.Name.ToLowerInvariant () == func.ToString ().ToLowerInvariant ())
+						fx.Invoke (args);
+				} catch (Exception e) {
+					if (Error) {
+						var func_name = (fx ?? new Function ("undefined", null)).Name;
+						Console.WriteLine ("[ERR ] Couldn't call function: {0}", func_name);
+						if (args.Any (arg => arg == null)) {
+							Console.WriteLine ("[ERR ] Any of the arguments is NULL.");
+							var i = 0;
+							foreach (var arg in args)
+								Console.WriteLine ("[ERR ] * [{0}]: {1}", i++, arg ?? "NULL");
+						} else
+							Console.WriteLine ("[ERR ] {0}", e.Message);
+					}
+				}
 			});
 		}
 
@@ -168,13 +222,18 @@ namespace Betterium
 			if (!lib.EndsWith (".dll"))
 				lib += ".dll";
 			var path = System.IO.Path.GetFullPath (lib);
-			var asm = Assembly.LoadFile (path);
-			var types = asm.GetTypes ().Where (t => t.IsSubclassOf (typeof(Library)));
-			var libraries = types.Select (t => (Library)Activator.CreateInstance (t));
-			var functions = libraries.Select (t => t.ExportedFunctions);
-			functions.ToList ().ForEach (Functions.AddRange);
-			if (!suppress_rebuild_lookup)
-				Functions = Functions.Distinct ().ToList ();
+			try {
+				var asm = Assembly.LoadFile (path);
+				var types = asm.GetTypes ().Where (t => t.IsSubclassOf (typeof(Library)));
+				var libraries = types.Select (t => (Library)Activator.CreateInstance (t));
+				var functions = libraries.Select (t => t.ExportedFunctions);
+				functions.ToList ().ForEach (Functions.AddRange);
+				if (!suppress_rebuild_lookup)
+					Functions = Functions.Distinct ().ToList ();
+			} catch {
+				if (Warn)
+					Console.WriteLine ("[WARN] Failed to import '{0}'", lib);
+			}
 			return this;
 		}
 

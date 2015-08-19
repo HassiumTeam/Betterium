@@ -34,7 +34,7 @@ namespace Betterium
 
 		[Argument ("--lib")]
 		[Docs ("Import a library")]
-		public string lib;
+		public string lib = "";
 	}
 }
 
