@@ -8,7 +8,7 @@ namespace Hassium
 		public AstNode Body { get { return Children [1]; } }
 		public AstNode ElseBody { get { return Children [2]; } }
 
-		public NodeWhile (AstNode predicate, AstNode body, AstNode elseBody = null) {
+		public NodeWhile (AstNode predicate, AstNode body, AstNode elseBody = null) : base ("While Statement") {
 			AddChild (predicate);
 			AddChild (body);
 			AddChild (elseBody ?? new AstNode ());

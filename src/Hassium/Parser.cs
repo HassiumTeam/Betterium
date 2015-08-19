@@ -5,7 +5,7 @@ namespace Hassium
 {
 	public class Parser : Chainable<Parser>, IFeedable<IEnumerable<Token>, Parser>
 	{
-		int pos;
+		int pos = 0;
 		List<Token> tokens;
 
 		#region IFeedable implementation
@@ -18,7 +18,7 @@ namespace Hassium
 		#endregion
 
 		public AstNode Parse () {
-			var block = new AstNode ();
+			var block = new AstNode ("Base");
 			while (CanAdvance ())
 				block.AddChild (ParseStatement ());
 			return block;
@@ -26,7 +26,6 @@ namespace Hassium
 
 		AstNode ParseStatement () {
 			if (Match (TokenType.Identifier)) {
-				Console.WriteLine ("stmt::ident");
 				var ident = tokens [pos].UnboxAs<string> ();
 				switch (ident) {
 				case "if":
@@ -39,18 +38,15 @@ namespace Hassium
 					return expr;
 				}
 			} else if (Match (TokenType.OpeningBracket)) {
-				Console.WriteLine ("stmt::opbr");
 				return ParseCodeBlock ();
-			} else {
-				var expr = ParseExpression ();
-				Expect (TokenType.ExpressionTerminator);
-				return expr;
 			}
+
+			ThrowUnexpected ();
+			return new AstNode ("When you see it, the parser is shitting bricks.");
 		}
 
 		AstNode ParseCodeBlock () {
-			Console.WriteLine ("block::");
-			var block = new AstNode ();
+			var block = new AstNode ("Code Block");
 			Expect (TokenType.OpeningBracket);
 			while (CanAdvance () && !Match (TokenType.ClosingBracket))
 				block.AddChild (ParseStatement ());
@@ -59,12 +55,10 @@ namespace Hassium
 		}
 
 		AstNode ParseExpression () {
-			Console.WriteLine ("expr::");
 			return ParseAssignment ();
 		}
 
 		AstNode ParseAssignment () {
-			Console.WriteLine ("ass::");
 			var left = ParseEquality ();
 			if (Accept (TokenType.AssignOp)) {
 				var right = ParseAssignment ();
@@ -74,7 +68,6 @@ namespace Hassium
 		}
 
 		AstNode ParseEquality () {
-			Console.WriteLine ("eq::");
 			var left = ParseAdditive ();
 			if (Accept (TokenType.CompOp)) {
 				var compop = tokens [pos].UnboxAs<string> ();
@@ -98,7 +91,6 @@ namespace Hassium
 		}
 
 		AstNode ParseAdditive () {
-			Console.WriteLine ("add::");
 			var left = ParseMultiplicative ();
 			if (Accept (TokenType.BinOp)) {
 				var binop = tokens [pos].UnboxAs<string> ();
@@ -116,7 +108,6 @@ namespace Hassium
 		}
 
 		AstNode ParseMultiplicative () {
-			Console.WriteLine ("mul::");
 			var left = ParseUnary ();
 			if (Accept (TokenType.BinOp)) {
 				var binop = tokens [pos].UnboxAs<string> ();
@@ -134,7 +125,6 @@ namespace Hassium
 		}
 
 		AstNode ParseUnary () {
-			Console.WriteLine ("un::");
 			if (Accept (TokenType.UnOp)) {
 				var unop = tokens [pos].UnboxAs<string> ();
 				AstNode right;
@@ -148,21 +138,18 @@ namespace Hassium
 		}
 
 		AstNode ParseFunctionCall () {
-			Console.WriteLine ("call::");
 			var term = ParseTerm ();
 			return ParseFunctionCall (term);
 		}
 
 		AstNode ParseFunctionCall (AstNode left) {
-			Console.WriteLine ("call::::");
-			return Accept (TokenType.OpeningParen)
+			return Match (TokenType.OpeningParen)
 				? ParseFunctionCall (new NodeFuncCall (left, ParseArgList ()))
 				: left;
 		}
 
 		AstNode ParseArgList () {
-			Console.WriteLine ("args::");
-			var arglist = new AstNode ();
+			var arglist = new AstNode ("Argument List");
 			Expect (TokenType.OpeningParen);
 			while (!Match (TokenType.ClosingParen)) {
 				arglist.AddChild (ParseExpression ());
@@ -174,7 +161,6 @@ namespace Hassium
 		}
 
 		AstNode ParseTerm () {
-			Console.WriteLine ("term::");
 			if (Match (TokenType.Number))
 				return new NodeNumber (Expect (TokenType.Number).UnboxAs<Double> ());
 			else if (Accept (TokenType.OpeningParen)) {
@@ -188,11 +174,10 @@ namespace Hassium
 				return new NodeIdent (Expect (TokenType.Identifier).UnboxAs<String> ());
 			else
 				ThrowUnexpected ();
-			return new AstNode ();
+			return new AstNode ("When you see it, the parser is shitting bricks.");
 		}
 
 		AstNode ParseIf () {
-			Expect (TokenType.Identifier, "if");
 			Expect (TokenType.OpeningParen);
 			var predicate = ParseExpression ();
 			Expect (TokenType.ClosingParen);
@@ -265,7 +250,7 @@ namespace Hassium
 		}
 
 		bool CanAdvance (int count = 1) {
-			return pos + count < tokens.Count;
+			return pos + count <= tokens.Count;
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace Hassium
 	{
 		public string Value;
 
-		public NodeIdent (string val) {
+		public NodeIdent (string val) : base ("Identifier") {
 			Value = val;
 		}
 	}

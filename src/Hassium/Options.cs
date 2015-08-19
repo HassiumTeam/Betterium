@@ -5,27 +5,27 @@ namespace Hassium
 {
 	public class Options
 	{
-		[Argument ("/i", "/input", "-i", "--input")]
+		[Argument ("-i", "--input")]
 		[Docs ("Input file.")]
 		public string input;
 
-		[Switch ("/wall", "-wall")]
+		[Switch ("-wall")]
 		[Docs ("Print all debug messages.")]
 		public bool w_all;
 
-		[Switch ("/werr", "-werr")]
+		[Switch ("-werr")]
 		[Docs ("Print exceptions.")]
 		public bool w_error;
 
-		[Switch ("/wwarn", "-wwarn")]
+		[Switch ("-wwarn")]
 		[Docs ("Print warnings.")]
 		public bool w_warn;
 
-		[Switch ("/wtime", "-wtime")]
+		[Switch ("-wtime")]
 		[Docs ("Print time measurements.")]
 		public bool w_time;
 
-		[Switch ("/wdebug", "-wdebug")]
+		[Switch ("-wdebug")]
 		[Docs ("Print debug information.")]
 		public bool w_debug;
 	}

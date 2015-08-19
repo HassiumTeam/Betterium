@@ -6,7 +6,7 @@ namespace Hassium
 	{
 		public Double Value;
 
-		public NodeNumber (double val) {
+		public NodeNumber (double val) : base ("Number") {
 			Value = val;
 		}
 	}

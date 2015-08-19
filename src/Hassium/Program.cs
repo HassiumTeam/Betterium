@@ -43,6 +43,7 @@ namespace Hassium
 			try {
 				stopwatch.Restart ();
 				tokens = scanner.Scan ();
+				stopwatch.Stop ();
 			} catch (Exception e) {
 				if (options.w_error)
 					Console.WriteLine (e.Message);
@@ -61,6 +62,7 @@ namespace Hassium
 			try {
 				stopwatch.Restart ();
 				ast = parser.Parse ();
+				stopwatch.Stop ();
 				DumpAst (ast);
 			} catch (Exception e) {
 				if (options.w_error)
@@ -88,10 +90,9 @@ namespace Hassium
         }
 
 		public static void DumpAst (AstNode node, int depth = 0) {
-			Console.WriteLine ("{0} {1}", "".PadLeft (depth, '-'), node);
-			foreach (var child in node.Children) {
+			Console.WriteLine ("{0}{1}", "".PadLeft (depth * 2, '-'), node.Name);
+			foreach (var child in node.Children)
 				DumpAst (child, depth + 1);
-			}
 		}
     }
 }

@@ -7,7 +7,7 @@ namespace Hassium
 		public UnOp Type;
 		public AstNode Value { get { return Children [0]; } }
 
-		public NodeUnOp (UnOp type, AstNode val) {
+		public NodeUnOp (UnOp type, AstNode val) : base ("Unary Operation") {
 			Type = type;
 			AddChild (val);
 		}
