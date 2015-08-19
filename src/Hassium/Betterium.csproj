@@ -48,7 +48,6 @@
     <Compile Include="Old\Functions\MiscFunctions.cs" />
     <Compile Include="Old\Functions\NetworkingFunctions.cs" />
     <Compile Include="Old\Functions\StringFunctions.cs" />
-    <Compile Include="Old\Debug\Debug.cs" />
     <Compile Include="Old\AbstractSyntaxTree\Nodes\ArgListNode.cs" />
     <Compile Include="Old\AbstractSyntaxTree\Nodes\BinaryOpNode.cs" />
     <Compile Include="Old\AbstractSyntaxTree\Nodes\CodeBlock.cs" />
