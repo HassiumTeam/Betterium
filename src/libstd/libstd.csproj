@@ -35,6 +35,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Exported\fxIO.cs" />
+    <Compile Include="Exported\fxMath.cs" />
+    <Compile Include="Exported\fxString.cs" />
+    <Compile Include="Exported\fxConv.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
