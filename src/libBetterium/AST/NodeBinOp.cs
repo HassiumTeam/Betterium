@@ -9,7 +9,7 @@ namespace Betterium
 		public AstNode Left { get { return Children [0]; } }
 		public AstNode Right { get { return Children [1]; } }
 
-		public NodeBinOp (BinOp type, AstNode left, AstNode right) : base ("Binary Operation") {
+		public NodeBinOp (BinOp type, AstNode left, AstNode right) : base ("Binary Operation", NodeType.Operation) {
 			Type = type;
 			AddChild (left);
 			AddChild (right);

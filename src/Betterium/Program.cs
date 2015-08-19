@@ -11,7 +11,7 @@ namespace Betterium
 		Options Options;
 
 		Betterium (Options options) {
-			this.Options = options;
+			Options = options;
 		}
 
         public static void Main(string[] args)
@@ -59,6 +59,7 @@ namespace Betterium
 			Interpreter
 				.GrabNew ()
 				.Feed (codebase)
+				.Import (Options.lib.Split (','))
 				.Run ();
 		}
 
@@ -83,32 +84,47 @@ namespace Betterium
 			} finally {
 				stopwatch.Stop ();
 			}
-			Console.WriteLine ("Scanning the source took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
+			Console.WriteLine ("[Time] Scanning the source took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
 
 			var parser = Parser
 				.GrabNew ()
 				.Feed (tokens);
 
-			AstNode ast;
+			AstNode ast = new AstNode ();
 			try {
 				stopwatch.Restart ();
 				ast = parser.Parse ();
 				stopwatch.Stop ();
-				DumpAst (ast);
+				if (Options.w_debug) {
+					Console.WriteLine ("[Debug] AST:");
+					DumpAst (ast);
+				}
 			} catch (Exception e) {
 				if (Options.w_error)
 					Console.WriteLine (e.Message);
 			} finally {
 				stopwatch.Stop ();
 			}
-			Console.WriteLine ("Parsing the tokens took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
+			Console.WriteLine ("[Time] Parsing the tokens took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
 
-			/*
-			Interpreter
+			var interpreter = Interpreter
 				.GrabNew ()
 				.Feed (ast)
-				.Execute ();
-			*/
+				.Import (Options.lib.Split (','));
+
+			try {
+				stopwatch.Restart ();
+				if (Options.w_debug)
+					Console.WriteLine ("[Debug] Output:");
+				interpreter.Run ();
+				stopwatch.Stop ();
+			} catch (Exception e) {
+				if (Options.w_error)
+					Console.WriteLine (e.Message);
+			} finally {
+				stopwatch.Stop ();
+			}
+			Console.WriteLine ("[Time] Interpreting the nodes took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
 		}
 
 		void DumpAst (AstNode node, int depth = 0) {

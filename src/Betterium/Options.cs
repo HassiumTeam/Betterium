@@ -15,11 +15,11 @@ namespace Betterium
 
 		[Switch ("-werr")]
 		[Docs ("Print exceptions.")]
-		public bool w_error;
+		public bool w_error = true;
 
 		[Switch ("-wwarn")]
 		[Docs ("Print warnings.")]
-		public bool w_warn;
+		public bool w_warn = true;
 
 		[Switch ("-wdebug")]
 		[Docs ("Print debug information.")]
@@ -28,6 +28,10 @@ namespace Betterium
 		[Switch ("--time")]
 		[Docs ("Print time measurements.")]
 		public bool time;
+
+		[Argument ("--lib")]
+		[Docs ("Import a library")]
+		public string lib;
 	}
 }
 

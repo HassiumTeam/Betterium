@@ -3,12 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Betterium", "Betterium\Betterium.csproj", "{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libBetterium", "libBetterium\libBetterium.csproj", "{4964A313-A0FA-4115-B584-96E31AC82E18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libstd", "libstd\libstd.csproj", "{12905B77-E968-4E68-99DA-B915F9AC5DDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12905B77-E968-4E68-99DA-B915F9AC5DDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12905B77-E968-4E68-99DA-B915F9AC5DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12905B77-E968-4E68-99DA-B915F9AC5DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12905B77-E968-4E68-99DA-B915F9AC5DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4964A313-A0FA-4115-B584-96E31AC82E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4964A313-A0FA-4115-B584-96E31AC82E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4964A313-A0FA-4115-B584-96E31AC82E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4964A313-A0FA-4115-B584-96E31AC82E18}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU

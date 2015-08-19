@@ -162,7 +162,7 @@ namespace Betterium
 
 		AstNode ParseTerm () {
 			if (Match (TokenType.Number))
-				return new NodeNumber (Expect (TokenType.Number).UnboxAs<Double> ());
+				return new NodeNumber (Expect (TokenType.Number).UnboxAs<Decimal> ());
 			else if (Accept (TokenType.OpeningParen)) {
 				var statement = ParseExpression ();
 				Expect (TokenType.ClosingParen);

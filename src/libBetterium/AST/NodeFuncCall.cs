@@ -7,7 +7,7 @@ namespace Betterium
 		public AstNode Target { get { return Children [0]; } }
 		public AstNode Arguments { get { return Children [1]; } }
 
-		public NodeFuncCall (AstNode left, AstNode args) : base ("Function Call") {
+		public NodeFuncCall (AstNode left, AstNode args) : base ("Function Call", NodeType.Function) {
 			AddChild (left);
 			AddChild (args);
 		}

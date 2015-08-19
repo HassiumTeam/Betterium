@@ -110,8 +110,8 @@ namespace Betterium
 			var accum = new StringBuilder ();
 			while (CanAdvance () && (char.IsLetterOrDigit (Peek ()) || Peek () == '.'))
 				accum.Append (Read ());
-			var tmp = .0d;
-			return double.TryParse (accum.ToString (), NumberStyles.Float, CultureInfo.InvariantCulture, out tmp)
+			decimal tmp = 0;
+			return decimal.TryParse (accum.ToString (), NumberStyles.Float, CultureInfo.InvariantCulture, out tmp)
 				? new Token (TokenType.Number, tmp, line, linepos)
 					: new Token (TokenType.Identifier, accum.ToString (), line, linepos);
 		}

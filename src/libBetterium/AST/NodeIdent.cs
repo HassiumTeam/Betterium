@@ -6,7 +6,7 @@ namespace Betterium
 	{
 		public string Value;
 
-		public NodeIdent (string val) : base ("Identifier") {
+		public NodeIdent (string val) : base ("Identifier", NodeType.Identifier) {
 			Value = val;
 		}
 	}
