@@ -14,7 +14,7 @@ namespace Hassium
 
 		public Scanner () {
 			pos = -1;
-			line = -1;
+			line = 0;
 			linepos = 0;
 			tokens = new List<Token> ();
 		}
@@ -144,11 +144,8 @@ namespace Hassium
 		}
 
 		void EatWhitespace () {
-			while (CanAdvance () && char.IsWhiteSpace (Peek ())) {
-				if (Peek () == '\n')
-					line++;
+			while (CanAdvance () && char.IsWhiteSpace (Peek ()))
 				Skip ();
-			}
 		}
 
 		bool CanAdvance (int count = 1) {
@@ -160,7 +157,9 @@ namespace Hassium
 		}
 
 		char Read () {
-			return source [++pos];
+			Skip ();
+			var chr = source [pos];
+			return chr;
 		}
 
 		string ReadStr () {

@@ -39,10 +39,11 @@ namespace Hassium
 				}
 			} else if (Match (TokenType.OpeningBracket)) {
 				return ParseCodeBlock ();
+			} else {
+				var expr = ParseExpression ();
+				Expect (TokenType.ExpressionTerminator);
+				return expr;
 			}
-
-			ThrowUnexpected ();
-			return new AstNode ();
 		}
 
 		AstNode ParseCodeBlock () {
