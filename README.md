@@ -1,6 +1,6 @@
 # Betterium
 Betterium is an interpreter + runtime for the Hassium programming language.  
-It's written in very object oriented C# and is very optimized.
+It's written in C# and is very well optimized.
 
 ## Hassium
 Hassium is a programming language written in C# for the heck of it.  
