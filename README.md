@@ -1,11 +1,15 @@
-# Hassium
-Hassium is a programming language written in C# for the heck of it.
-The syntax is a lot like C mixed with Python and it is very easy to
-learn to program in it.
+# Betterium
+Betterium is an interpreter + runtime for the Hassium programming language.  
+It's written in very object oriented C# and is very optimized.
 
-Hassium Hello World:
+## Hassium
+Hassium is a programming language written in C# for the heck of it.  
+It is intended to be easy-to-write and easy-to-learn.
+
+A simple Hello World program in Hassium:
 ```
-print("Hello, World!");
+print ("Hello, World!");
 ```
 
-More documentation coming soon.
+For documentation, take a look at the original Hassium interpreter:  
+[Hassium](//github.com/HassiumTeam/Hassium)
