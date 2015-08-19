@@ -31,25 +31,35 @@ namespace Hassium
 		}
 
 		AstNode ParseStatement () {
-			if (Match (TokenType.OpeningBracket))
-				return ParseCodeBlock ();
+			Console.WriteLine ("statement");
 			
 			if (Match (TokenType.Identifier)) {
+				Console.WriteLine ("statement:identifier");
 				var ident = tokens [pos].UnboxAs<string> ();
 				switch (ident) {
 				case "if":
+					Console.WriteLine ("statement:identifier:if");
 					return ParseIf ();
 				case "while":
+					Console.WriteLine ("statement:identifier:while");
 					return ParseWhile ();
 				}
+			} else if (Match (TokenType.OpeningBracket)) {
+				Console.WriteLine ("statement:openingbracket");
+				return ParseCodeBlock ();
+			} else {
+				Console.WriteLine ("statement:");
+				var expr = ParseExpression ();
+				Expect (TokenType.ExpressionTerminator);
+				return expr;
 			}
 
-			var expr = ParseExpression ();
-			Expect (TokenType.ExpressionTerminator);
-			return expr;
+			ThrowUnexpected ();
+			return new AstNode ();
 		}
 
 		AstNode ParseCodeBlock () {
+			Console.WriteLine ("codeblock");
 			var block = new AstNode ();
 			Expect (TokenType.OpeningBracket);
 			while (CanAdvance () && !Match (TokenType.ClosingBracket))
@@ -59,10 +69,12 @@ namespace Hassium
 		}
 
 		AstNode ParseExpression () {
+			Console.WriteLine ("expression");
 			return ParseAssignment ();
 		}
 
 		AstNode ParseAssignment () {
+			Console.WriteLine ("assignment");
 			var left = ParseEquality ();
 			if (Accept (TokenType.AssignOp)) {
 				var right = ParseAssignment ();
@@ -72,6 +84,7 @@ namespace Hassium
 		}
 
 		AstNode ParseEquality () {
+			Console.WriteLine ("equality");
 			var left = ParseAdditive ();
 			if (Accept (TokenType.CompOp)) {
 				var compop = tokens [pos].UnboxAs<string> ();
@@ -95,6 +108,7 @@ namespace Hassium
 		}
 
 		AstNode ParseAdditive () {
+			Console.WriteLine ("additive");
 			var left = ParseMultiplicative ();
 			if (Accept (TokenType.BinOp)) {
 				var binop = tokens [pos].UnboxAs<string> ();
@@ -112,6 +126,7 @@ namespace Hassium
 		}
 
 		AstNode ParseMultiplicative () {
+			Console.WriteLine ("multiplicative");
 			var left = ParseUnary ();
 			if (Accept (TokenType.BinOp)) {
 				var binop = tokens [pos].UnboxAs<string> ();
@@ -129,6 +144,7 @@ namespace Hassium
 		}
 
 		AstNode ParseUnary () {
+			Console.WriteLine ("unary");
 			if (Accept (TokenType.UnOp)) {
 				var unop = tokens [pos].UnboxAs<string> ();
 				AstNode right;
@@ -142,20 +158,21 @@ namespace Hassium
 		}
 
 		AstNode ParseFunctionCall () {
+			Console.WriteLine ("function call");
 			var term = ParseTerm ();
 			return ParseFunctionCall (term);
 		}
 
 		AstNode ParseFunctionCall (AstNode left) {
-			if (Accept (TokenType.OpeningParen)) {
-				var right = ParseArgList ();
-				var term = new NodeFuncCall (left, right);
-				return ParseFunctionCall (term);
-			}
-			return left;
+			Console.WriteLine ("function call left");
+			if (Accept (TokenType.OpeningParen))
+				return ParseFunctionCall (new NodeFuncCall (left, ParseArgList ()));
+			else
+				return left;
 		}
 
 		AstNode ParseArgList () {
+			Console.WriteLine ("arglist");
 			var arglist = new AstNode ();
 			Expect (TokenType.OpeningParen);
 			while (!Match (TokenType.ClosingParen)) {
@@ -168,22 +185,25 @@ namespace Hassium
 		}
 
 		AstNode ParseTerm () {
+			Console.WriteLine ("term");
 			if (Match (TokenType.Number))
 				return new NodeNumber (Expect (TokenType.Number).UnboxAs<Double> ());
-			if (Accept (TokenType.OpeningParen)) {
+			else if (Accept (TokenType.OpeningParen)) {
 				var statement = ParseExpression ();
 				Expect (TokenType.ClosingParen);
 				return statement;
 			}
-			if (Match (TokenType.String))
+			else if (Match (TokenType.String))
 				return new NodeString (Expect (TokenType.String).UnboxAs<String> ());
-			if (Match (TokenType.Identifier))
-				return new NodeIdent (Expect (TokenType.String).UnboxAs<String> ());
-			ThrowUnexpected ();
+			else if (Match (TokenType.Identifier))
+				return new NodeIdent (Expect (TokenType.Identifier).UnboxAs<String> ());
+			else
+				ThrowUnexpected ();
 			return new AstNode ();
 		}
 
 		AstNode ParseIf () {
+			Console.WriteLine ("if");
 			Expect (TokenType.Identifier, "if");
 			Expect (TokenType.OpeningParen);
 			var predicate = ParseExpression ();
@@ -197,6 +217,7 @@ namespace Hassium
 		}
 
 		AstNode ParseWhile () {
+			Console.WriteLine ("while");
 			Expect (TokenType.Identifier, "while");
 			Expect (TokenType.OpeningParen);
 			var predicate = ParseExpression ();
@@ -236,22 +257,23 @@ namespace Hassium
 		Token Expect (TokenType type) {
 			if (!Match (type))
 				ThrowExpected (type);
-			return tokens [pos];
+			return tokens [pos++];
 		}
 
 		Token Expect (TokenType type, object val) {
 			if (!Match (type, val))
 				ThrowExpected (type);
-			return tokens [pos];
+			return tokens [pos++];
 		}
 
 		void ThrowExpected (TokenType type) {
-			var format = string.Format ("Expected: '{0}'; Got: '{1}'", type, tokens [pos].Type);
+			var format = string.Format ("*** Expected: '{0}'; Got: '{1}'\n*** Value: '{2}' at line {3}; position {4}",
+				type, tokens [pos].Type, tokens [pos].Value, tokens [pos].Line, tokens [pos].LinePos);
 			throw new Exception (format);
 		}
 
 		void ThrowUnexpected () {
-			var format = string.Format ("Unexpected: '{0}'", tokens [pos].Type);
+			var format = string.Format ("*** Unexpected: '{0}'", tokens [pos].Type);
 			throw new Exception (format);
 		}
 

@@ -50,45 +50,45 @@ namespace Hassium
 					SkipComment ();
 					break;
 				case ';':
-					tokens.Add (new Token (TokenType.ExpressionTerminator, ReadStr ()));
+					tokens.Add (new Token (TokenType.ExpressionTerminator, ReadStr (), line, linepos));
 					break;
 				case '(':
-					tokens.Add (new Token (TokenType.OpeningParen, ReadStr ()));
+					tokens.Add (new Token (TokenType.OpeningParen, ReadStr (), line, linepos));
 					break;
 				case ')':
-					tokens.Add (new Token (TokenType.ClosingParen, ReadStr ()));
+					tokens.Add (new Token (TokenType.ClosingParen, ReadStr (), line, linepos));
 					break;
 				case '{':
-					tokens.Add (new Token (TokenType.OpeningBracket, ReadStr ()));
+					tokens.Add (new Token (TokenType.OpeningBracket, ReadStr (), line, linepos));
 					break;
 				case '}':
-					tokens.Add (new Token (TokenType.ClosingBracket, ReadStr ()));
+					tokens.Add (new Token (TokenType.ClosingBracket, ReadStr (), line, linepos));
 					break;
 				case ',':
-					tokens.Add (new Token (TokenType.Commata, ReadStr ()));
+					tokens.Add (new Token (TokenType.Commata, ReadStr (), line, linepos));
 					break;
 				case '+':
 				case '-':
 				case '*':
 				case '/':
-					tokens.Add (new Token (TokenType.BinOp, ReadStr ()));
+					tokens.Add (new Token (TokenType.BinOp, ReadStr (), line, linepos));
 					break;
 				case '=':
 				case '<':
 				case '>':
-					tokens.Add (new Token (TokenType.CompOp, ReadStr ()));
+					tokens.Add (new Token (TokenType.CompOp, ReadStr (), line, linepos));
 					break;
 				case '!':
 					if (Peek (2) == '=') {
 						Skip (2);
-						tokens.Add (new Token (TokenType.CompOp, "!="));
+						tokens.Add (new Token (TokenType.CompOp, "!=", line, linepos));
 					} else
-						tokens.Add (new Token (TokenType.UnOp, ReadStr ()));
+						tokens.Add (new Token (TokenType.UnOp, ReadStr (), line, linepos));
 					break;
 				case ':':
 					if (Peek (2) == '=') {
 						Skip (2);
-						tokens.Add (new Token (TokenType.AssignOp, ":="));
+						tokens.Add (new Token (TokenType.AssignOp, ":=", line, linepos));
 					} else
 						ThrowUnexpectedToken ();
 					break;
@@ -112,8 +112,8 @@ namespace Hassium
 				accum.Append (Read ());
 			var tmp = .0d;
 			return double.TryParse (accum.ToString (), NumberStyles.Float, CultureInfo.InvariantCulture, out tmp)
-				? new Token (TokenType.Number, tmp)
-				: new Token (TokenType.Identifier, accum.ToString ());
+				? new Token (TokenType.Number, tmp, line, linepos)
+					: new Token (TokenType.Identifier, accum.ToString (), line, linepos);
 		}
 
 		Token ScanString () {
@@ -133,7 +133,7 @@ namespace Hassium
 				} else
 					accum.Append (Read ());
 			}
-			return new Token (TokenType.String, accum.ToString ());
+			return new Token (TokenType.String, accum.ToString (), line, linepos);
 		}
 
 		void SkipComment () {
