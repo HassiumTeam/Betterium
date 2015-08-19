@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hassium
+namespace Betterium
 {
 	public class AstNode
 	{

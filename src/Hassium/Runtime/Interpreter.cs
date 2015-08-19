@@ -1,11 +1,21 @@
 ﻿using System;
 
-namespace Hassium
+namespace Betterium
 {
-	public class Interpreter
+	public class Interpreter : Chainable<Interpreter>, IFeedable<AstNode, Interpreter>
 	{
-		public Interpreter ()
-		{
+		AstNode Codebase;
+
+		#region IFeedable implementation
+
+		public Interpreter Feed (AstNode codebase) {
+			this.Codebase = codebase;
+			return this;
+		}
+
+		#endregion
+
+		public void Run () {
 		}
 	}
 }

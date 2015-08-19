@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Hassium
+namespace Betterium
 {
 	public class Scanner : Chainable<Scanner>, IFeedable<string, Scanner>
 	{

@@ -7,9 +7,9 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4D071F79-A66C-4C18-A702-FD50E6C4BC3B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Hassium</RootNamespace>
+    <RootNamespace>Betterium</RootNamespace>
     <AssemblyName>Betterium</AssemblyName>
-    <StartupObject>Hassium.HassiumInterpreter</StartupObject>
+    <StartupObject>Betterium.Betterium</StartupObject>
     <CodePage>65001</CodePage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

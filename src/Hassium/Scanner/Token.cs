@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Hassium
+namespace Betterium
 {
 	public class Token
 	{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hassium
+namespace Betterium
 {
 	public class NodeBinOp : AstNode
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hassium
+namespace Betterium
 {
 	public class Parser : Chainable<Parser>, IFeedable<IEnumerable<Token>, Parser>
 	{

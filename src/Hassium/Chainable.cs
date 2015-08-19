@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hassium
+namespace Betterium
 {
 	public abstract class Chainable<T> where T : new() {
 		public static T GrabNew () {

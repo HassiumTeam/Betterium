@@ -1,7 +1,7 @@
 ﻿using System;
 using Codeaddicts.libArgument.Attributes;
 
-namespace Hassium
+namespace Betterium
 {
 	public class Options
 	{
@@ -21,13 +21,13 @@ namespace Hassium
 		[Docs ("Print warnings.")]
 		public bool w_warn;
 
-		[Switch ("-wtime")]
-		[Docs ("Print time measurements.")]
-		public bool w_time;
-
 		[Switch ("-wdebug")]
 		[Docs ("Print debug information.")]
 		public bool w_debug;
+
+		[Switch ("--time")]
+		[Docs ("Print time measurements.")]
+		public bool time;
 	}
 }
 
