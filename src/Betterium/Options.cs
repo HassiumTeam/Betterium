@@ -29,6 +29,9 @@ namespace Betterium
 		[Docs ("Print time measurements.")]
 		public bool time;
 
+		[Switch ("--ast")]
+		public bool dump_ast;
+
 		[Argument ("--lib")]
 		[Docs ("Import a library")]
 		public string lib;

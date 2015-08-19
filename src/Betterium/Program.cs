@@ -41,21 +41,38 @@ namespace Betterium
         }
 
 		void Run (string src) {
-			if (Options.time)
-				RunTimed (src);
-			else
-				RunNormal (src);
+			RunNormal (src);
 		}
 
 		void RunNormal (string src) {
+			var stopwatch = new Stopwatch ();
+
+			stopwatch.Start ();
 			var tokens = Scanner
 				.GrabNew ()
 				.Feed (src)
 				.Scan ();
+			stopwatch.Stop ();
+
+			if (Options.time)
+				Console.WriteLine ("[INFO] Lexical analysis took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
+
+			stopwatch.Restart ();
 			var codebase = Parser
 				.GrabNew ()
 				.Feed (tokens)
 				.Parse ();
+			stopwatch.Stop ();
+
+			if (Options.time)
+				Console.WriteLine ("[INFO] Logical analysis took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
+
+			if (Options.dump_ast) {
+				Console.WriteLine ("[INFO] AST dump:");
+				DumpAst (codebase);
+			}
+
+			Console.Write ("\n");
 			Interpreter
 				.GrabNew ()
 				.Feed (codebase)
@@ -63,72 +80,8 @@ namespace Betterium
 				.Run ();
 		}
 
-		void RunTimed (string src) {
-			// Grab scanner
-			var scanner = Scanner
-				.GrabNew ()
-				.Feed (src);
-
-			// Instantiate stopwatch
-			var stopwatch = new Stopwatch ();
-
-			IEnumerable<Token> tokens;
-			try {
-				stopwatch.Restart ();
-				tokens = scanner.Scan ();
-				stopwatch.Stop ();
-			} catch (Exception e) {
-				if (Options.w_error)
-					Console.WriteLine (e.Message);
-				return;
-			} finally {
-				stopwatch.Stop ();
-			}
-			Console.WriteLine ("[Time] Scanning the source took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
-
-			var parser = Parser
-				.GrabNew ()
-				.Feed (tokens);
-
-			AstNode ast = new AstNode ();
-			try {
-				stopwatch.Restart ();
-				ast = parser.Parse ();
-				stopwatch.Stop ();
-				if (Options.w_debug) {
-					Console.WriteLine ("[Debug] AST:");
-					DumpAst (ast);
-				}
-			} catch (Exception e) {
-				if (Options.w_error)
-					Console.WriteLine (e.Message);
-			} finally {
-				stopwatch.Stop ();
-			}
-			Console.WriteLine ("[Time] Parsing the tokens took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
-
-			var interpreter = Interpreter
-				.GrabNew ()
-				.Feed (ast)
-				.Import (Options.lib.Split (','));
-
-			try {
-				stopwatch.Restart ();
-				if (Options.w_debug)
-					Console.WriteLine ("[Debug] Output:");
-				interpreter.Run ();
-				stopwatch.Stop ();
-			} catch (Exception e) {
-				if (Options.w_error)
-					Console.WriteLine (e.Message);
-			} finally {
-				stopwatch.Stop ();
-			}
-			Console.WriteLine ("[Time] Interpreting the nodes took {0} milliseconds.", stopwatch.ElapsedMilliseconds);
-		}
-
 		void DumpAst (AstNode node, int depth = 0) {
-			Console.WriteLine ("{0}{1}", "".PadLeft (depth * 2, '-'), node.Name);
+			Console.WriteLine ("{0}* {1}", "".PadLeft (depth * 2, ' '), node.Name);
 			foreach (var child in node.Children)
 				DumpAst (child, depth + 1);
 		}
